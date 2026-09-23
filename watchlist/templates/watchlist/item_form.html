@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | Watchlist Manager{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="form-intro"><p class="eyebrow">{% if item %}MAKE A CHANGE{% else %}SAVE SOMETHING GREAT{% endif %}</p><h1>{{ page_title }}</h1><p class="muted">{% if item %}Update the details of this title in your personal collection.{% else %}Add the details below. You can always edit them later.{% endif %}</p></div>
+    <form method="post" class="item-form" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="form-grid">
+            {% for field in form %}
+                <div class="form-field {% if field.name == 'review' %}full-width{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>
+                    {{ field }}
+                    {% if field.help_text %}<small class="help-text">{{ field.help_text }}</small>{% endif %}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="form-buttons"><button class="button button-primary" type="submit">{{ submit_label }} <span>→</span></button>{% if item %}<a class="button button-secondary" href="{% url 'item_detail' item.pk %}">Cancel</a>{% else %}<a class="button button-secondary" href="{% url 'watchlist' %}">Cancel</a>{% endif %}</div>
+    </form>
+</section>
+{% endblock %}

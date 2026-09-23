@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Watchlist Manager{% endblock %}
+
+{% block content %}
+<section class="page-heading dashboard-heading">
+    <div>
+        <p class="eyebrow">YOUR VIEWING OVERVIEW</p>
+        <h1>Good to see you, {{ user.username }}.</h1>
+        <p class="muted">Here is the story of your watchlist so far.</p>
+    </div>
+    <a class="button button-primary" href="{% url 'item_create' %}">+ Add an item</a>
+</section>
+
+<section class="stats-grid" aria-label="Watchlist statistics">
+    <article class="stat-card stat-total"><span class="stat-icon">◈</span><p>Total items</p><strong>{{ counts.total }}</strong></article>
+    <article class="stat-card stat-want"><span class="stat-icon">◌</span><p>Want to watch</p><strong>{{ counts.want }}</strong></article>
+    <article class="stat-card stat-watching"><span class="stat-icon">◉</span><p>Watching</p><strong>{{ counts.watching }}</strong></article>
+    <article class="stat-card stat-watched"><span class="stat-icon">✓</span><p>Watched</p><strong>{{ counts.watched }}</strong></article>
+    <article class="stat-card stat-rating"><span class="stat-icon">★</span><p>Average rating</p><strong>{% if average_rating %}{{ average_rating|floatformat:1 }}{% else %}—{% endif %}</strong></article>
+</section>
+
+<section class="section-heading">
+    <div><h2>Recently added</h2><p class="muted">Your latest saved titles.</p></div>
+    {% if recent_items %}<a class="text-link" href="{% url 'watchlist' %}">See all items →</a>{% endif %}
+</section>
+
+{% if recent_items %}
+    <section class="item-grid dashboard-grid">
+        {% for item in recent_items %}
+            <article class="watch-card">
+                <div class="card-topline"><span class="type-pill">{{ item.get_item_type_display }}</span><span class="status-badge status-{{ item.status }}">{{ item.get_status_display }}</span></div>
+                <h3><a href="{% url 'item_detail' item.pk %}">{{ item.title }}</a></h3>
+                <p class="card-meta">{{ item.genre }} · {{ item.release_year }}</p>
+                <div class="card-footer"><span class="rating-display">{% if item.rating %}★ {{ item.rating|floatformat:1 }} <small>/ 10</small>{% else %}Not rated{% endif %}</span><a href="{% url 'item_detail' item.pk %}" aria-label="View {{ item.title }}">→</a></div>
+            </article>
+        {% endfor %}
+    </section>
+{% else %}
+    <section class="empty-state"><span>◈</span><h2>Your list is waiting for its first title.</h2><p>Add a movie or TV show to see your viewing stats come alive.</p><a class="button button-primary" href="{% url 'item_create' %}">Add your first item</a></section>
+{% endif %}
+{% endblock %}

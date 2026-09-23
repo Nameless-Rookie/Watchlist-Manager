@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete {{ item.title }} | Watchlist Manager{% endblock %}
+
+{% block content %}
+<section class="confirm-card">
+    <span class="warning-icon">!</span>
+    <p class="eyebrow">DELETE ITEM</p>
+    <h1>Are you sure you want to delete this item?</h1>
+    <p>You are about to remove <strong>{{ item.title }}</strong> from your watchlist. This action cannot be undone.</p>
+    <form method="post" class="confirm-actions">{% csrf_token %}<button type="submit" class="button button-danger">Confirm delete</button><a class="button button-secondary" href="{% url 'item_detail' item.pk %}">Cancel</a></form>
+</section>
+{% endblock %}

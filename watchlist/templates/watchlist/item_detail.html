@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ item.title }} | Watchlist Manager{% endblock %}
+
+{% block content %}
+<p class="back-link"><a href="{% url 'watchlist' %}">← Back to my watchlist</a></p>
+<article class="detail-card">
+    <div class="detail-main">
+        <div class="detail-topline"><span class="type-pill">{{ item.get_item_type_display }}</span><span class="status-badge status-{{ item.status }}">{{ item.get_status_display }}</span></div>
+        <h1>{{ item.title }}</h1>
+        <p class="detail-meta">{{ item.genre }} <span>·</span> {{ item.release_year }} <span>·</span> Added {{ item.created_at|date:'F j, Y' }}</p>
+        <div class="big-rating">{% if item.rating %}<span>★</span> {{ item.rating|floatformat:1 }} <small>out of 10</small>{% else %}<span class="unrated">Not rated yet</span>{% endif %}</div>
+        <section class="notes-section"><h2>Personal review / notes</h2>{% if item.review %}<p>{{ item.review|linebreaksbr }}</p>{% else %}<p class="muted">You have not added any notes for this title.</p>{% endif %}</section>
+    </div>
+    <aside class="detail-side"><p class="side-label">CURRENT STATUS</p><strong>{{ item.get_status_display }}</strong><div class="detail-actions"><a class="button button-primary" href="{% url 'item_update' item.pk %}">Edit item</a><a class="button button-danger" href="{% url 'item_delete' item.pk %}">Delete item</a></div></aside>
+</article>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Log in | Watchlist Manager{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+    <form method="post" class="auth-card" novalidate>
+        {% csrf_token %}
+        <p class="eyebrow">WELCOME BACK</p>
+        <h1>Log in to your list</h1>
+        <p class="muted">Pick up exactly where you left off.</p>
+        {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="form-field">
+            <label for="{{ form.username.id_for_label }}">Username</label>
+            {{ form.username }}{{ form.username.errors }}
+        </div>
+        <div class="form-field">
+            <label for="{{ form.password.id_for_label }}">Password</label>
+            {{ form.password }}{{ form.password.errors }}
+        </div>
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+        <button class="button button-primary button-full" type="submit">Log in <span>→</span></button>
+        <p class="auth-switch">New here? <a href="{% url 'register' %}">Create an account</a></p>
+    </form>
+</section>
+{% endblock %}

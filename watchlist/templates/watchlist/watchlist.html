@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}My Watchlist | Watchlist Manager{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div><p class="eyebrow">YOUR COLLECTION</p><h1>My Watchlist</h1><p class="muted">Search and shape the list around your next watch.</p></div>
+    <a class="button button-primary" href="{% url 'item_create' %}">+ Add an item</a>
+</section>
+
+<form method="get" class="filter-panel">
+    <div class="search-field"><label class="sr-only" for="search">Search titles or notes</label><input id="search" type="search" name="q" value="{{ query }}" placeholder="Search titles or notes..."></div>
+    <div class="filter-select"><label for="type">Type</label><select id="type" name="type"><option value="">All types</option>{% for value, label in type_choices %}<option value="{{ value }}" {% if selected_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <div class="filter-select"><label for="genre">Genre</label><select id="genre" name="genre"><option value="">All genres</option>{% for value, label in genre_choices %}<option value="{{ value }}" {% if selected_genre == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <div class="filter-select"><label for="status">Status</label><select id="status" name="status"><option value="">All statuses</option>{% for value, label in status_choices %}<option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <div class="filter-select"><label for="sort">Sort by</label><select id="sort" name="sort"><option value="recent" {% if selected_sort == 'recent' %}selected{% endif %}>Recently added</option><option value="title" {% if selected_sort == 'title' %}selected{% endif %}>Title A–Z</option><option value="rating" {% if selected_sort == 'rating' %}selected{% endif %}>Highest rating</option></select></div>
+    <div class="filter-actions"><button class="button button-primary" type="submit">Apply</button><a href="{% url 'watchlist' %}">Clear</a></div>
+</form>
+
+<p class="result-count">{{ items|length }} item{{ items|length|pluralize }} found</p>
+{% if items %}
+    <section class="item-grid">
+        {% for item in items %}
+            <article class="watch-card">
+                <div class="card-topline"><span class="type-pill">{{ item.get_item_type_display }}</span><span class="status-badge status-{{ item.status }}">{{ item.get_status_display }}</span></div>
+                <h2><a href="{% url 'item_detail' item.pk %}">{{ item.title }}</a></h2>
+                <p class="card-meta">{{ item.genre }} <span>·</span> {{ item.release_year }}</p>
+                {% if item.review %}<p class="card-review">{{ item.review|truncatechars:95 }}</p>{% else %}<p class="card-review no-review">No personal notes yet.</p>{% endif %}
+                <div class="card-footer"><span class="rating-display">{% if item.rating %}★ {{ item.rating|floatformat:1 }} <small>/ 10</small>{% else %}Not rated{% endif %}</span><span class="added-date">Added {{ item.created_at|date:'M j, Y' }}</span></div>
+                <div class="card-actions"><a href="{% url 'item_detail' item.pk %}">View</a><a href="{% url 'item_update' item.pk %}">Edit</a><a class="danger-link" href="{% url 'item_delete' item.pk %}">Delete</a></div>
+            </article>
+        {% endfor %}
+    </section>
+{% else %}
+    <section class="empty-state"><span>⌕</span><h2>No titles match this view.</h2><p>Try changing the filters, or add a new movie or show.</p><a class="button button-primary" href="{% url 'item_create' %}">+ Add an item</a></section>
+{% endif %}
+{% endblock %}
